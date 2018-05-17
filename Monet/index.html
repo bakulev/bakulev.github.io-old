@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="/timeline/jquery.timeline.css" rel="stylesheet"/>
+</head>
+<body>
+    <h2>Index</h2>
+    <div id="tline" style="height: 300px;"></div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="/timeline/jquery.timeline.js"></script>
+
+    
+    <script>
+        SimileAjax.urlPrefix = Timeline.urlPrefix = "/timeline/";
+        var eventSource = new Timeline.DefaultEventSource(0),
+            theme = Timeline.ClassicTheme.create(),
+            d = Timeline.DateTime.parseGregorianDateTime("1870");
+
+        theme.event.bubble.width = 320;
+        theme.event.bubble.height = 220;
+        theme.ether.backgroundColors[1] = theme.ether.backgroundColors[0];
+
+        $.get("/monet.xml").done(function (xml) {
+            $("#tline").syrinxTimeline({
+                bands: [
+                {
+                    width: "10%",
+                    intervalUnit: Timeline.DateTime.DECADE,
+                    intervalPixels: 200,
+                    date: d,
+                    showEventText: false,
+                    theme: theme,
+                    highlight: false,
+                    decorators: [
+                        new Timeline.SpanHighlightDecorator({
+                            startDate: "Nov 14 1840 00:00:00 GMT",
+                            endDate: "Dec 05 1926 00:00:00 GMT",
+                            startLabel: "birth",
+                            endLabel: "death",
+                            color: "#FFC080",
+                            opacity: 50,
+                            theme: theme
+                        })
+                    ],
+                    etherPainter: new Timeline.YearCountEtherPainter({
+                        startDate: "Nov 14 1840 00:00:00 GMT",
+                        multiple: 5,
+                        theme: theme
+                    })
+                },
+                {
+                    width: "90%",
+                    intervalUnit: Timeline.DateTime.DECADE,
+                    intervalPixels: 200,
+                    eventSource: eventSource,
+                    date: d,
+                    theme: theme
+                }]
+            });
+            eventSource.loadXML(xml, "");
+        });
+    </script>
+
+</body>
+</html>
